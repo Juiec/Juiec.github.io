@@ -227,7 +227,7 @@ body {
 
 @keyframes rotate-wireframe {
   from { transform: rotateY(0deg) rotateX(15deg); }
-  to   { transform: rotateY(360deg) rotateX(15deg); }
+  to   { transform: rotateY(359deg) rotateX(15deg); }
 }
 
 @keyframes float-star {

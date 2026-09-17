@@ -9,21 +9,22 @@ export default function Projects() {
 
   const projects = [
     {
-      title: "Trust-Based Writing Toolkit",
-      year: "2025",
-      desc: "A non-punitive AI writing declaration toolkit to promote responsible authorship. Focuses on AI literacy and academic integrity.",
-      tech: ["FYP", "AI Literacy", "React"],
-      tag: "EdTech",
-      gif: "/gifs/writing-toolkit.gif",
-      link: "https://github.com/yourname/writing-toolkit",
+      title: "GlowdeningAI",
+      year: "2026",
+      desc: "Glowdening AI is a companionAI that helps users with mental health and emotional support through natural language processing and sentiment analysis.",
+      tech: ["Finetuned Local LLM", "RAG", "self-hosted", "React", "Node.js"],
+      tag: "Full-Stack AI Development",
+      gif: "/gifs/placeholder.gif",
+      link: "https://glowdening-ai.vercel.app/",
     },
+    
     {
       title: "Smart Smoking Detection",
       year: "2024",
       desc: "Real-time detection using YOLOE-26 and MediaPipe pose estimation. Reduces false positives via temporal verification logic.",
       tech: ["Python", "YOLOE", "OpenCV"],
       tag: "Computer Vision",
-      gif: "/gifs/smoking-detection.gif",
+      gif: "/gifs/placeholder.gif",
       link: "https://github.com/yourname/smoking-detection",
     },
     {
@@ -32,7 +33,7 @@ export default function Projects() {
       desc: "AI-assisted judging system using YOLO for detection and VideoPose3D for 2D-to-3D skeleton reconstruction.",
       tech: ["Python", "VideoPose3D", "YOLO"],
       tag: "Research",
-      gif: "/gifs/skating-ai.gif",
+      gif: "/gifs/placeholder.gif",
       link: "https://github.com/yourname/skating-ai",
     },
     {
@@ -41,18 +42,19 @@ export default function Projects() {
       desc: "Autonomous AI patrolling system integrating computer vision and edge AI.",
       tech: ["Python", "YOLO", "Edge AI"],
       tag: "Computer Vision",
-      gif: "/gifs/patrolling.gif",
+      gif: "/gifs/placeholder.gif",
       link: "https://github.com/yourname/patrolling",
     },
     {
-      title: "Another Project",
-      year: "2024",
-      desc: "Project description.",
-      tech: ["React", "TypeScript"],
-      tag: "Development",
-      gif: "/gifs/another-project.gif",
-      link: "https://github.com/yourname/another-project",
+      title: "Trust-Based Writing Toolkit",
+      year: "2025",
+      desc: "A non-punitive AI writing declaration toolkit to promote responsible authorship. Focuses on AI literacy and academic integrity.",
+      tech: ["FYP", "AI Literacy", "React"],
+      tag: "EdTech",
+      gif: "/gifs/placeholder.gif",
+      link: "https://github.com/yourname/writing-toolkit",
     },
+    
   ]
 
   const cols = isMobile ? "1fr" : isTablet ? "repeat(2,1fr)" : "repeat(3,1fr)"
