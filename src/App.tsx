@@ -194,6 +194,10 @@ function playSnap() {
   } catch {}
 }
 
+function isScrollBox(value: string) {
+  return value === "auto" || value === "scroll" || value === "hidden" || value === "overlay"
+}
+
 function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
   const cbRef = useRef(onSection)
   useEffect(() => { cbRef.current = onSection })
@@ -202,26 +206,76 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
 
   useEffect(() => {
     let busy = false
+    let busyTimer = 0
     let touchStartY = 0
+    const SLACK = 48
+
+    function scroller() {
+      return document.scrollingElement ?? document.documentElement
+    }
+    function getY() {
+      return scroller().scrollTop
+    }
+    function setY(n: number) {
+      window.scrollTo(0, Math.max(0, n))
+    }
+    function markBusy(on: boolean) {
+      busy = on
+      window.clearTimeout(busyTimer)
+      if (on) busyTimer = window.setTimeout(() => { busy = false }, 1200)
+    }
 
     function tops() {
+      const y = getY()
       return SNAP_SECTIONS.map((id) => {
         const el = document.getElementById(id)
-        return el ? Math.round(el.getBoundingClientRect().top + window.scrollY) : 0
+        return el ? Math.round(el.getBoundingClientRect().top + y) : 0
       })
     }
 
     function currentIndex() {
       const t = tops()
-      const mid = window.scrollY + window.innerHeight * 0.35
+      const mid = getY() + window.innerHeight * 0.35
       let idx = 0
       for (let i = 0; i < t.length; i++) if (mid >= t[i]) idx = i
       return idx
     }
 
+    function wheelDelta(e: WheelEvent) {
+      if (e.deltaMode === 1) return e.deltaY * 16
+      if (e.deltaMode === 2) return e.deltaY * window.innerHeight
+      return e.deltaY
+    }
+
+    function atEdge(dir: "down" | "up") {
+      const idx = currentIndex()
+      const el = document.getElementById(SNAP_SECTIONS[idx])
+      if (!el) return true
+      // Sections that are ~one screen must snap both ways. A few extra
+      // pixels of height used to block down-scroll while up-snap still fired.
+      if (el.offsetHeight <= window.innerHeight + SLACK) return true
+      const sectionTop = tops()[idx]
+      const sectionBottom = sectionTop + el.offsetHeight
+      const pad = 32
+      if (dir === "down") return getY() + window.innerHeight >= sectionBottom - pad
+      return getY() <= sectionTop + pad
+    }
+
+    function wheelWouldTrap(target: EventTarget | null) {
+      let el = target instanceof Element ? target : null
+      while (el && el !== document.documentElement && el !== document.body) {
+        const { overflowX, overflowY } = getComputedStyle(el)
+        if (isScrollBox(overflowY) || isScrollBox(overflowX)) {
+          return el.scrollHeight <= el.clientHeight + 1
+        }
+        el = el.parentElement
+      }
+      return false
+    }
+
     function springTo(targetY: number, onDone: () => void, endBounce = false) {
       const shell = endBounce ? document.getElementById("page-shell") : null
-      let pos = window.scrollY
+      let pos = getY()
       let vel = endBounce ? 780 : 0
       const k = endBounce ? 300 : 310
       const b = endBounce ? 20 : 27
@@ -229,7 +283,7 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
       if (shell) shell.style.willChange = "transform"
 
       function settle() {
-        window.scrollTo(0, targetY)
+        setY(targetY)
         if (shell) {
           shell.style.transform = ""
           shell.style.willChange = ""
@@ -245,7 +299,7 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
         pos += vel * dt
 
         const scrollY = endBounce ? Math.max(0, Math.min(pos, targetY)) : Math.max(0, pos)
-        window.scrollTo(0, scrollY)
+        setY(scrollY)
         if (shell) {
           const overshoot = scrollY - pos
           shell.style.transform = overshoot ? `translateY(${overshoot}px)` : ""
@@ -293,42 +347,51 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
     function goTo(idx: number) {
       if (busy) return
       if (idx < 0) {
-        busy = true
-        rubberBand(-1, () => { busy = false })
+        markBusy(true)
+        rubberBand(-1, () => markBusy(false))
         return
       }
-      if (idx >= SNAP_SECTIONS.length) return
+      if (idx >= SNAP_SECTIONS.length) {
+        markBusy(true)
+        rubberBand(1, () => markBusy(false))
+        return
+      }
 
       const dest = tops()[idx]
       const landingOnContact = idx === SNAP_SECTIONS.length - 1
-      const alreadyThere = Math.abs(window.scrollY - dest) < 12
+      const alreadyThere = Math.abs(getY() - dest) < 12
 
-      busy = true
+      markBusy(true)
       cbRef.current(idx)
       playSnap()
-      springTo(dest, () => { busy = false }, landingOnContact && !alreadyThere)
+      springTo(dest, () => markBusy(false), landingOnContact && !alreadyThere)
     }
 
     goToRef.current = goTo
 
-    function atEdge(dir: "down" | "up") {
-      const idx = currentIndex()
-      const el = document.getElementById(SNAP_SECTIONS[idx])
-      if (!el) return true
-      const sectionTop = tops()[idx]
-      const sectionBottom = sectionTop + el.offsetHeight
-      const pad = 6
-      if (dir === "down") return window.scrollY + window.innerHeight >= sectionBottom - pad
-      return window.scrollY <= sectionTop + pad
-    }
-
     function onWheel(e: WheelEvent) {
-      if (e.deltaY > 0 && atEdge("down")) {
+      const dy = wheelDelta(e)
+      if (dy === 0) return
+
+      if (busy) {
         e.preventDefault()
-        if (!busy) goTo(currentIndex() + 1)
-      } else if (e.deltaY < 0 && atEdge("up")) {
+        return
+      }
+
+      if (dy > 0 && atEdge("down")) {
         e.preventDefault()
-        if (!busy) goTo(currentIndex() - 1)
+        goTo(currentIndex() + 1)
+        return
+      }
+      if (dy < 0 && atEdge("up")) {
+        e.preventDefault()
+        goTo(currentIndex() - 1)
+        return
+      }
+
+      if (wheelWouldTrap(e.target)) {
+        e.preventDefault()
+        setY(getY() + dy)
       }
     }
 
@@ -341,11 +404,12 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
       else if (dy < 0 && atEdge("up")) goTo(currentIndex() - 1)
     }
 
-    window.addEventListener("wheel", onWheel, { passive: false })
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchend", onTouchEnd, { passive: true })
     return () => {
-      window.removeEventListener("wheel", onWheel)
+      window.clearTimeout(busyTimer)
+      window.removeEventListener("wheel", onWheel, { capture: true })
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
@@ -432,7 +496,7 @@ export default function App() {
   }, [])
 
   return (
-    <div style={{ background: "#f8f8f6", minHeight: "100vh", position: "relative", overflowX: "hidden" }}>
+    <div style={{ background: "#f8f8f6", minHeight: "100vh", position: "relative", overflowX: "clip" }}>
       <GridBackground />
       <ScrollingCube />
       <SectionDots active={activeSection} />

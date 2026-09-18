@@ -41,7 +41,7 @@ const PROJECTS: Project[] = [
     title: "Glowdening",
     year: "2026",
     desc: "A daily OS and wellbeing companion I lead as Co-Founder and CTO — built to help people manage overwhelm and shape a day that can actually be lived. Long-term memory and RAG are in active prototyping.",
-    tech: ["Next.js", "TypeScript", "Tailwind", "Supabase", "DeepSeek"],
+    tech: ["RAG", "Local LLM", "Supabase"],
     tag: "Product",
     image: "/cards/glowdeningAI.png",
     link: "https://glowdening-ai.vercel.app/",
@@ -49,7 +49,7 @@ const PROJECTS: Project[] = [
   {
     title: "ISS Computer Vision",
     year: "2026",
-    desc: "Custom YOLO models and OpenCV pipelines for smoking and fall detection, trained, evaluated, and run on NVIDIA Jetson edge devices at ISS Facility Services.",
+    desc: "Custom YOLO models and OpenCV pipelines for various object detection tasks, trained, evaluated, and run on NVIDIA Jetson edge devices at ISS Facility Services.",
     tech: ["Python", "YOLO", "OpenCV", "NVIDIA Jetson"],
     tag: "Edge AI",
     image: "/cards/SmokingDetection.jpg",
@@ -60,6 +60,8 @@ const PROJECTS: Project[] = [
     desc: "Lead programmer for CUHK's competitive robotics team. Ranked 17th among 249 teams at the 2025 VEX Robotics World Championship, using C++ with PROS, LemLib, PID, and Pure Pursuit.",
     tech: ["C++", "PROS", "LemLib", "PID", "Pure Pursuit"],
     tag: "Robotics",
+    image: "/cards/VEXRobotics.png",
+    link: "https://www4.mae.cuhk.edu.hk/newsnawards/robot-skills-champion-at-the-2024-2025-vex-robotics-competition-asia-open-finals/",
   },
   {
     title: "Figure Skating AI",
@@ -129,7 +131,7 @@ export default function Projects() {
       <div
         style={{
           maxHeight: showAll ? "2000px" : `${collapsedHeight}px`,
-          overflow: "hidden",
+          overflow: "clip",
           transition: "max-height 0.8s cubic-bezier(0.22,1,0.36,1)",
         }}
       >

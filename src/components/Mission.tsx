@@ -81,7 +81,7 @@ return (
       alignItems: "center",
       justifyContent: "center",
       boxSizing: "border-box",
-      overflow: isMobile ? "visible" : "hidden",
+      overflow: isMobile ? "visible" : "clip",
     }}
   >
     <div
@@ -145,7 +145,7 @@ return (
             gap: 0,
             borderBottom: "1px solid rgba(17,17,16,0.10)",
             marginBottom: sm ? 32 : 40,
-            overflowX: "auto",
+            overflowX: isMobile ? "auto" : "visible",
           }}
         >
           {tabs.map((t, i) => (

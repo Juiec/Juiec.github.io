@@ -89,7 +89,7 @@ export default function Skills() {
     <section
       id="skills"
       style={{
-        overflow: "hidden",
+        overflow: "clip",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
