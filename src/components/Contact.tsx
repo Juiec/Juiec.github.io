@@ -3,6 +3,58 @@ import { useBreakpoint } from "../hooks/useBreakpoint"
 import Eyebrow from "./Eyebrow"
 import SectionHeading from "./SectionHeading"
 
+function InkLine() {
+  return (
+    <svg width="100%" height="10" viewBox="0 0 400 10" preserveAspectRatio="none" style={{ display: "block", overflow: "visible" }}>
+      <path
+        d="M0,5 C25,3.2 55,7 95,4.8 C135,2.6 165,7.4 210,5.2 C255,3 285,7.6 325,4.6 C358,2.2 382,6.2 400,5"
+        stroke="rgba(17,17,16,0.22)"
+        strokeWidth="1.3"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function SiteFooter({ locked }: { locked: boolean }) {
+  const { sm, md: isMobile } = useBreakpoint()
+
+  return (
+    <footer
+      aria-hidden={!locked}
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : 0,
+        zIndex: 90,
+        background: "#f8f8f6",
+        opacity: locked ? 1 : 0,
+        pointerEvents: locked ? "auto" : "none",
+        transform: locked ? "translateY(0)" : "translateY(10px)",
+        transition: "opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+      }}
+    >
+      <InkLine />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
+          padding: sm ? "12px 20px 18px" : "12px 32px 18px",
+        }}
+      >
+        <span className="font-display" style={{ fontSize: 15, fontWeight: 600 }}>Sean Mo</span>
+        <span style={{ fontSize: 12, color: "#6b6b68" }}>© 2026 — AI Engineer</span>
+      </div>
+    </footer>
+  )
+}
+
 export default function Contact() {
   const { sm, md: isMobile, lg: isTablet } = useBreakpoint()
 
@@ -26,35 +78,24 @@ export default function Contact() {
     },
     {
       label: "Download Resume",
-      description: "PDF · Updated Aug 2026",
+      description: "PDF · Updated Sep 2026",
       href: import.meta.env.VITE_RESUME_PATH,
       icon: "↓",
       download: true,
     },
   ]
 
-  const inkLine = (
-    <svg width="100%" height="10" viewBox="0 0 400 10" preserveAspectRatio="none" style={{ display: "block", overflow: "visible" }}>
-      <path
-        d="M0,5 C25,3.2 55,7 95,4.8 C135,2.6 165,7.4 210,5.2 C255,3 285,7.6 325,4.6 C358,2.2 382,6.2 400,5"
-        stroke="rgba(17,17,16,0.22)"
-        strokeWidth="1.3"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-
   return (
     <section
       id="contact"
       style={{
-        minHeight: "clamp(620px, 78vh, 820px)",
+        minHeight: isMobile
+          ? "calc(100svh - 72px - env(safe-area-inset-bottom, 0px))"
+          : "100svh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         overflow: "hidden",
+        paddingBottom: 64,
       }}
     >
       {/* Main content */}
@@ -62,8 +103,7 @@ export default function Contact() {
         maxWidth: 1200,
         margin: "0 auto",
         width: "100%",
-        padding: sm ? "72px 20px 100px" : isMobile ? "90px 28px 100px" : "100px 64px 64px",
-        marginBottom: "clamp(32px, 6vh, 80px)",
+        padding: sm ? "72px 20px 24px" : isMobile ? "90px 28px 28px" : "100px 64px 32px",
       }}>
         <Eyebrow>Let's talk</Eyebrow>
         <SectionHeading style={{ margin: sm ? "0 0 28px" : "0 0 30px", fontSize: "clamp(3rem, 4vw, 5.2rem)" }}>Get in touch</SectionHeading>
@@ -79,7 +119,7 @@ export default function Contact() {
           {/* Left — intro + social links */}
           <div>
             <p style={{ fontSize: sm ? 14 : "clamp(14px, 1.25vw, 16px)", lineHeight: 1.8, color: "#6b6b68", marginBottom: sm ? 24 : 28, maxWidth: 360 }}>
-              Currently open to ML Engineering roles in EdTech and Computer Vision.
+              Currently open to AI Engineering roles in EdTech and Computer Vision.
               If you're building something in that space, I'd love to hear about it.
             </p>
 
@@ -110,7 +150,7 @@ export default function Contact() {
                     </div>
                     <span style={{ fontSize: 13, opacity: 0.45 }}>↗</span>
                   </a>
-                  {inkLine}
+                  <InkLine />
                 </Fragment>
               ))}
             </div>
@@ -139,22 +179,6 @@ export default function Contact() {
               </a>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Footer — ink line full-width, text near edges */}
-      <div>
-        {inkLine}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          padding: sm ? "12px 20px 18px" : "12px 32px 18px",
-        }}>
-          <span className="font-display" style={{ fontSize: 15, fontWeight: 600 }}>Portfolio</span>
-          <span style={{ fontSize: 12, color: "#6b6b68" }}>© 2026 — ML Engineer</span>
         </div>
       </div>
     </section>

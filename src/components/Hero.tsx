@@ -18,7 +18,18 @@ export default function Hero() {
       }}
     >
       <div>
-        <Eyebrow>Machine Learning Engineer • Learning Designer</Eyebrow>
+        <p
+          className="font-display"
+          style={{
+            fontSize: sm ? 20 : 22,
+            fontWeight: 600,
+            letterSpacing: "-0.03em",
+            margin: "0 0 8px",
+          }}
+        >
+          Sean Mo
+        </p>
+        <Eyebrow>AI Engineer</Eyebrow>
         <h1
           className="font-display"
           style={{

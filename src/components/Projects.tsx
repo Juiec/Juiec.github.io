@@ -3,59 +3,84 @@ import { useBreakpoint } from "../hooks/useBreakpoint"
 import Eyebrow from "./Eyebrow"
 import SectionHeading from "./SectionHeading"
 
+type Project = {
+  title: string
+  year: string
+  desc: string
+  tech: string[]
+  tag: string
+  image?: string
+  gif?: string
+  link?: string
+}
+
+function ProjectMedia({ image, gif, alt }: Pick<Project, "image" | "gif"> & { alt: string }) {
+  if (!image) {
+    return <div className="project-media project-media--empty" aria-hidden />
+  }
+
+  return (
+    <div className="project-media">
+      <img src={image} alt={alt} loading="lazy" decoding="async" />
+      {gif && (
+        <img
+          src={gif}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          decoding="async"
+          className="project-media-gif"
+        />
+      )}
+    </div>
+  )
+}
+
+const PROJECTS: Project[] = [
+  {
+    title: "Glowdening",
+    year: "2026",
+    desc: "A daily OS and wellbeing companion I lead as Co-Founder and CTO — built to help people manage overwhelm and shape a day that can actually be lived. Long-term memory and RAG are in active prototyping.",
+    tech: ["Next.js", "TypeScript", "Tailwind", "Supabase", "DeepSeek"],
+    tag: "Product",
+    image: "/cards/glowdeningAI.png",
+    link: "https://glowdening-ai.vercel.app/",
+  },
+  {
+    title: "ISS Computer Vision",
+    year: "2026",
+    desc: "Custom YOLO models and OpenCV pipelines for smoking and fall detection, trained, evaluated, and run on NVIDIA Jetson edge devices at ISS Facility Services.",
+    tech: ["Python", "YOLO", "OpenCV", "NVIDIA Jetson"],
+    tag: "Edge AI",
+    image: "/cards/SmokingDetection.jpg",
+  },
+  {
+    title: "VEX Robotics — CUHK",
+    year: "2024–2025",
+    desc: "Lead programmer for CUHK's competitive robotics team. Ranked 17th among 249 teams at the 2025 VEX Robotics World Championship, using C++ with PROS, LemLib, PID, and Pure Pursuit.",
+    tech: ["C++", "PROS", "LemLib", "PID", "Pure Pursuit"],
+    tag: "Robotics",
+  },
+  {
+    title: "Figure Skating AI",
+    year: "Academic",
+    desc: "Proposed an AI-assisted judging workflow using pose estimation and anonymized 3D skeletal representations. Researched VideoPose3D and a conceptual multi-camera pipeline for more consistent technical scoring.",
+    tech: ["Python", "VideoPose3D", "Pose Estimation"],
+    tag: "Research",
+    image: "/cards/figure_skating_jump.gif",
+  },
+  {
+    title: "Trust-Based Writing Toolkit",
+    year: "2025–2027",
+    desc: "In-progress final-year project: a non-punitive AI writing declaration toolkit for responsible authorship, AI literacy, and academic integrity.",
+    tech: ["FYP", "AI Literacy", "EdTech"],
+    tag: "In progress · FYP",
+  },
+]
+
 export default function Projects() {
   const { sm, md: isMobile, lg: isTablet } = useBreakpoint()
   const [showAll, setShowAll] = useState(false)
-
-  const projects = [
-    {
-      title: "GlowdeningAI",
-      year: "2026",
-      desc: "Glowdening AI is a companionAI that helps users with mental health and emotional support through natural language processing and sentiment analysis.",
-      tech: ["Finetuned Local LLM", "RAG", "self-hosted", "React", "Node.js"],
-      tag: "Full-Stack AI Development",
-      gif: "/gifs/placeholder.gif",
-      link: "https://glowdening-ai.vercel.app/",
-    },
-    
-    {
-      title: "Smart Smoking Detection",
-      year: "2024",
-      desc: "Real-time detection using YOLOE-26 and MediaPipe pose estimation. Reduces false positives via temporal verification logic.",
-      tech: ["Python", "YOLOE", "OpenCV"],
-      tag: "Computer Vision",
-      gif: "/gifs/placeholder.gif",
-      link: "https://github.com/yourname/smoking-detection",
-    },
-    {
-      title: "Figure Skating AI",
-      year: "2024",
-      desc: "AI-assisted judging system using YOLO for detection and VideoPose3D for 2D-to-3D skeleton reconstruction.",
-      tech: ["Python", "VideoPose3D", "YOLO"],
-      tag: "Research",
-      gif: "/gifs/placeholder.gif",
-      link: "https://github.com/yourname/skating-ai",
-    },
-    {
-      title: "AI-Powered Autonomous Patrolling",
-      year: "2026",
-      desc: "Autonomous AI patrolling system integrating computer vision and edge AI.",
-      tech: ["Python", "YOLO", "Edge AI"],
-      tag: "Computer Vision",
-      gif: "/gifs/placeholder.gif",
-      link: "https://github.com/yourname/patrolling",
-    },
-    {
-      title: "Trust-Based Writing Toolkit",
-      year: "2025",
-      desc: "A non-punitive AI writing declaration toolkit to promote responsible authorship. Focuses on AI literacy and academic integrity.",
-      tech: ["FYP", "AI Literacy", "React"],
-      tag: "EdTech",
-      gif: "/gifs/placeholder.gif",
-      link: "https://github.com/yourname/writing-toolkit",
-    },
-    
-  ]
 
   const cols = isMobile ? "1fr" : isTablet ? "repeat(2,1fr)" : "repeat(3,1fr)"
   const collapsedHeight = sm ? 640 : isMobile ? 760 : isTablet ? 520 : 420
@@ -112,7 +137,7 @@ export default function Projects() {
           className="projects-grid"
           style={{ gridTemplateColumns: cols }}
         >
-          {projects.map((p, index) => {
+          {PROJECTS.map((p, index) => {
             const hidden = !showAll && index >= 3
             return (
               <article
@@ -137,28 +162,9 @@ export default function Projects() {
                   e.currentTarget.style.transform = hidden ? "translateY(40px)" : "translateY(0)"
                 }}
               >
-                <div
-                  style={{
-                    width: "100%",
-                    aspectRatio: "16/9",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    marginBottom: 20,
-                    background: "rgba(17,17,16,0.05)",
-                  }}
-                >
-                  <img
-                    src={p.gif}
-                    alt={p.title}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
+                <ProjectMedia image={p.image} gif={p.gif} alt={p.title} />
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12 }}>
                   <span
                     style={{
                       fontSize: 11,
@@ -173,24 +179,28 @@ export default function Projects() {
                   >
                     {p.tag}
                   </span>
-                  <span style={{ fontSize: 13, color: "#6b6b68" }}>{p.year}</span>
+                  <span style={{ fontSize: 13, color: "#6b6b68", flexShrink: 0 }}>{p.year}</span>
                 </div>
 
                 <h3
                   className="font-display"
                   style={{ fontSize: "clamp(1.1rem, 1.8vw, 1.4rem)", fontWeight: 400, letterSpacing: "-0.01em", margin: "0 0 12px" }}
                 >
-                  <a
-                    href={p.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: "inherit",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {p.title}
-                  </a>
+                  {p.link ? (
+                    <a
+                      href={p.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: "inherit",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {p.title}
+                    </a>
+                  ) : (
+                    p.title
+                  )}
                 </h3>
 
                 <p

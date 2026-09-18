@@ -126,7 +126,7 @@ export default function Nav({
         top: 16,
         left: "50%",
         transform: "translateX(-50%)",
-        zIndex: 100,
+        zIndex: 200,
         width: "min(860px, calc(100% - 32px))",
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(12px)",
@@ -198,6 +198,9 @@ export default function Nav({
   )
 }
 
+const LOGO_TEXT = "Sean Mo"
+const LOGO_HEIGHT = 36
+
 function LogoCanvas({ triggerCount, onClick }: { triggerCount: number; onClick?: () => void }) {
   const divRef = useRef<HTMLDivElement>(null)
   const stateRef = useRef<{ t: number; spinning: boolean; spinT: number; frameId: number } | null>(null)
@@ -205,78 +208,94 @@ function LogoCanvas({ triggerCount, onClick }: { triggerCount: number; onClick?:
   useEffect(() => {
     const el = divRef.current
     if (!el) return
-    const W = 200
-    const H = 36
+    const H = LOGO_HEIGHT
+    let cancelled = false
+    let dispose = () => {}
 
-    const tc = document.createElement("canvas")
-    tc.width = W * 2
-    tc.height = H * 2
-    const ctx = tc.getContext("2d")!
-    const texture = new THREE.CanvasTexture(tc)
+    const start = () => {
+      if (cancelled || !el) return
+      const probe = document.createElement("canvas").getContext("2d")!
+      probe.font = `600 ${H * 1.1}px Fraunces, Georgia, serif`
+      const W = Math.ceil(probe.measureText(LOGO_TEXT).width) + 12
+      el.style.width = `${W}px`
 
-    const draw = () => {
-      ctx.clearRect(0, 0, tc.width, tc.height)
-      ctx.font = `600 ${H * 1.1}px Fraunces, Georgia, serif`
-      ctx.fillStyle = "#111110"
-      ctx.textBaseline = "middle"
-      ctx.textAlign = "left"
-      ctx.fillText("Learning Designer", 0, H)
-      texture.needsUpdate = true
-    }
-    document.fonts.ready.then(draw)
+      const tc = document.createElement("canvas")
+      tc.width = W * 2
+      tc.height = H * 2
+      const ctx = tc.getContext("2d")!
+      const texture = new THREE.CanvasTexture(tc)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setSize(W, H)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.setClearColor(0x000000, 0)
-    el.appendChild(renderer.domElement)
-    renderer.domElement.style.display = "block"
-
-    const scene = new THREE.Scene()
-    const camera = new THREE.OrthographicCamera(-W / 2, W / 2, H / 2, -H / 2, 0.1, 1000)
-    camera.position.z = 100
-
-    const geo = new THREE.PlaneGeometry(W, H)
-    const mat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide })
-    const plane = new THREE.Mesh(geo, mat)
-    scene.add(plane)
-
-    const s = { t: 0, spinning: false, spinT: 0, frameId: 0 }
-    stateRef.current = s
-
-    const easeBack = (t: number) => {
-      const c = 1.70158 * 1.525
-      return t < 0.5
-        ? ((2 * t) ** 2 * ((c + 1) * 2 * t - c)) / 2
-        : ((2 * t - 2) ** 2 * ((c + 1) * (t * 2 - 2) + c) + 2) / 2
-    }
-
-    const tick = () => {
-      s.frameId = requestAnimationFrame(tick)
-      s.t += 0.016
-      if (s.spinning) {
-        s.spinT = Math.min(s.spinT + 0.02, 1)
-        plane.rotation.y = easeBack(s.spinT) * Math.PI * 2
-        if (s.spinT >= 1) {
-          s.spinning = false
-          s.spinT = 0
-          plane.rotation.y = 0
-        }
-      } else {
-        plane.rotation.y = Math.sin(s.t * 0.5) * 0.1
-        plane.rotation.x = Math.sin(s.t * 0.3 + 1) * 0.035
+      const draw = () => {
+        ctx.clearRect(0, 0, tc.width, tc.height)
+        ctx.font = `600 ${H * 1.1}px Fraunces, Georgia, serif`
+        ctx.fillStyle = "#111110"
+        ctx.textBaseline = "middle"
+        ctx.textAlign = "left"
+        ctx.fillText(LOGO_TEXT, 0, H)
+        texture.needsUpdate = true
       }
-      renderer.render(scene, camera)
+      draw()
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer.setSize(W, H)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+      renderer.setClearColor(0x000000, 0)
+      el.appendChild(renderer.domElement)
+      renderer.domElement.style.display = "block"
+
+      const scene = new THREE.Scene()
+      const camera = new THREE.OrthographicCamera(-W / 2, W / 2, H / 2, -H / 2, 0.1, 1000)
+      camera.position.z = 100
+
+      const geo = new THREE.PlaneGeometry(W, H)
+      const mat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide })
+      const plane = new THREE.Mesh(geo, mat)
+      scene.add(plane)
+
+      const s = { t: 0, spinning: false, spinT: 0, frameId: 0 }
+      stateRef.current = s
+
+      const easeBack = (t: number) => {
+        const c = 1.70158 * 1.525
+        return t < 0.5
+          ? ((2 * t) ** 2 * ((c + 1) * 2 * t - c)) / 2
+          : ((2 * t - 2) ** 2 * ((c + 1) * (t * 2 - 2) + c) + 2) / 2
+      }
+
+      const tick = () => {
+        s.frameId = requestAnimationFrame(tick)
+        s.t += 0.016
+        if (s.spinning) {
+          s.spinT = Math.min(s.spinT + 0.02, 1)
+          plane.rotation.y = easeBack(s.spinT) * Math.PI * 2
+          if (s.spinT >= 1) {
+            s.spinning = false
+            s.spinT = 0
+            plane.rotation.y = 0
+          }
+        } else {
+          plane.rotation.y = Math.sin(s.t * 0.5) * 0.1
+          plane.rotation.x = Math.sin(s.t * 0.3 + 1) * 0.035
+        }
+        renderer.render(scene, camera)
+      }
+      tick()
+
+      dispose = () => {
+        cancelAnimationFrame(s.frameId)
+        geo.dispose()
+        mat.dispose()
+        texture.dispose()
+        renderer.dispose()
+        if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement)
+      }
     }
-    tick()
+
+    document.fonts.ready.then(start)
 
     return () => {
-      cancelAnimationFrame(s.frameId)
-      geo.dispose()
-      mat.dispose()
-      texture.dispose()
-      renderer.dispose()
-      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement)
+      cancelled = true
+      dispose()
     }
   }, [])
 
@@ -290,7 +309,16 @@ function LogoCanvas({ triggerCount, onClick }: { triggerCount: number; onClick?:
     <div
       ref={divRef}
       onClick={onClick}
-      style={{ width: 200, height: 36, cursor: "pointer", display: "inline-flex", alignItems: "center", flexShrink: 0 }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={LOGO_TEXT}
+      style={{ width: 140, height: LOGO_HEIGHT, cursor: "pointer", display: "inline-flex", alignItems: "center", flexShrink: 0 }}
     />
   )
 }

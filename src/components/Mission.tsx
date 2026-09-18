@@ -11,11 +11,11 @@ export default function Mission() {
 
   const education = [
     {
-      period: "2023 – 2027(Expected)",
+      period: "2023 – 2027 (Expected)",
       degree: "B.Sc. Learning Design & Technology",
       institution: "Chinese University of Hong Kong (CUHK)",
-      detail: "Final-year project on AI writing declaration toolkits. Coursework spans educational technology, AI literacy, learning analytics, and instructional design.",
-      tags: ["AI Literacy", "EdTech", "Learning Analytics"],
+      detail: "In-progress final-year project on AI writing declaration toolkits. Coursework: AI in Action, Programming, Data Analysis, Multimedia Systems, Educational Technology, and Web Design.",
+      tags: ["AI Literacy", "EdTech", "Web Design"],
     },
   ]
 
@@ -23,48 +23,45 @@ export default function Mission() {
     {
       area: "Machine Learning Engineering",
       icon: "◈",
-      desc: "Building production-grade CV pipelines with YOLO, MediaPipe, and PyTorch. Emphasis on real-time inference, edge deployment, and system reliability.",
-      tags: ["Python", "PyTorch", "YOLO", "Edge AI"],
+      desc: "Building production-grade CV pipelines with YOLO, OpenCV, and NVIDIA Jetson. Emphasis on real-time inference, edge deployment, and system reliability.",
+      tags: ["Python", "YOLO", "OpenCV", "NVIDIA Jetson"],
     },
     {
       area: "EdTech & AI Literacy",
       icon: "◉",
-      desc: "Designing tools and curricula that help students and educators engage with AI responsibly. Focus on transparency, non-punitive frameworks, and explainability.",
-      tags: ["Curriculum Design", "React", "Responsible AI"],
+      desc: "Designing tools and curricula that help students and educators engage with AI responsibly. Current FYP: a non-punitive writing declaration toolkit focused on transparency and academic integrity.",
+      tags: ["Curriculum Design", "Responsible AI", "FYP"],
     },
     {
       area: "Human-Centred Design",
       icon: "△",
-      desc: "Grounding AI systems in user needs through iterative prototyping, usability testing, and context-aware design — particularly in educational environments.",
+      desc: "Grounding AI systems in user needs through iterative prototyping and context-aware design — particularly in wellbeing and educational environments, with privacy and trust first.",
       tags: ["UX Research", "Prototyping", "Accessibility"],
     },
   ]
 
   const experience = [
     {
-      period: "2026",
-      role: "AI Engineer",
-      org: "Autonomous Patrolling Project",
+      period: "2026 – Present",
+      role: "Co-Founder & CTO",
+      org: "Glowdening",
+      type: "Founder",
+      desc: "Lead technical architecture and AI strategy for an AI-powered wellbeing companion. Prototyping long-term memory with embeddings, semantic search, and RAG, with a focus on privacy, trust, and energy-aware recommendations.",
+    },
+    {
+      period: "Sep 2026 – Present",
+      role: "AI Solutions Engineer",
+      org: "ISS Facility Services Limited",
       type: "Contract",
-      desc: "Developing an autonomous patrolling system integrating YOLO-based detection with edge AI hardware. Responsible for the full CV pipeline and deployment.",
+      desc: "Developing and evaluating computer vision proof-of-concept solutions with Python, OpenCV, YOLO, and NVIDIA Jetson. Building inference pipelines, visualization, and edge deployment workflows.",
     },
-
     {
-      period: "2026",
-      role: "CV Engineer",
-      org: "Smart Smoking Detection",
-      type: "Project",
-      desc: "Implemented real-time smoking detection using YOLOE-26 and MediaPipe pose estimation with temporal verification to reduce false positives.",
+      period: "Jun 2026 – Aug 2026",
+      role: "AI & Robotics Intern",
+      org: "ISS Facility Services Limited",
+      type: "Internship",
+      desc: "Tested an AI OCR platform and trained custom YOLO models for smoking and fall detection. Configured Jetson environments, benchmarked vendor solutions, and authored an operations manual.",
     },
-
-    {
-      period: "2024 — 2025",
-      role: "Computer Vision Researcher",
-      org: "Figure Skating AI Project",
-      type: "Research",
-      desc: "Built an AI-assisted judging system using VideoPose3D for 3D skeleton reconstruction and YOLO for athlete detection across broadcast footage.",
-    }
-    
   ]
 
 return (

@@ -10,7 +10,7 @@ import Hero from "./components/Hero"
 import Mission from "./components/Mission"
 import Projects from "./components/Projects"
 import Skills from "./components/Skills"
-import Contact from "./components/Contact"
+import Contact, { SiteFooter } from "./components/Contact"
 import { useMobile } from "./hooks/useBreakpoint"
 
 // ─── Grid background ─────────────────────────────────────────────────────────
@@ -219,11 +219,23 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
       return idx
     }
 
-    function springTo(targetY: number, onDone: () => void) {
+    function springTo(targetY: number, onDone: () => void, endBounce = false) {
+      const shell = endBounce ? document.getElementById("page-shell") : null
       let pos = window.scrollY
-      let vel = 0
-      const k = 310, b = 27
+      let vel = endBounce ? 780 : 0
+      const k = endBounce ? 300 : 310
+      const b = endBounce ? 20 : 27
       let last: number | null = null
+      if (shell) shell.style.willChange = "transform"
+
+      function settle() {
+        window.scrollTo(0, targetY)
+        if (shell) {
+          shell.style.transform = ""
+          shell.style.willChange = ""
+        }
+        onDone()
+      }
 
       function step(t: number) {
         if (last === null) { last = t; requestAnimationFrame(step); return }
@@ -231,11 +243,47 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
         last = t
         vel += (-k * (pos - targetY) - b * vel) * dt
         pos += vel * dt
-        window.scrollTo(0, Math.max(0, pos))
+
+        const scrollY = endBounce ? Math.max(0, Math.min(pos, targetY)) : Math.max(0, pos)
+        window.scrollTo(0, scrollY)
+        if (shell) {
+          const overshoot = scrollY - pos
+          shell.style.transform = overshoot ? `translateY(${overshoot}px)` : ""
+        }
+
         if (Math.abs(vel) > 0.8 || Math.abs(pos - targetY) > 0.8) {
           requestAnimationFrame(step)
         } else {
-          window.scrollTo(0, targetY)
+          settle()
+        }
+      }
+      requestAnimationFrame(step)
+    }
+
+    function rubberBand(sign: number, onDone: () => void) {
+      const shell = document.getElementById("page-shell")
+      if (!shell) { onDone(); return }
+      const target: HTMLElement = shell
+
+      let pos = 0
+      let vel = sign * -720
+      const k = 340
+      const b = 24
+      let last: number | null = null
+      target.style.willChange = "transform"
+
+      function step(t: number) {
+        if (last === null) { last = t; requestAnimationFrame(step); return }
+        const dt = Math.min((t - last) / 1000, 0.05)
+        last = t
+        vel += (-k * pos - b * vel) * dt
+        pos += vel * dt
+        target.style.transform = `translateY(${pos}px)`
+        if (Math.abs(vel) > 0.7 || Math.abs(pos) > 0.7) {
+          requestAnimationFrame(step)
+        } else {
+          target.style.transform = ""
+          target.style.willChange = ""
           onDone()
         }
       }
@@ -244,11 +292,21 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
 
     function goTo(idx: number) {
       if (busy) return
-      if (idx < 0 || idx >= SNAP_SECTIONS.length) return
+      if (idx < 0) {
+        busy = true
+        rubberBand(-1, () => { busy = false })
+        return
+      }
+      if (idx >= SNAP_SECTIONS.length) return
+
+      const dest = tops()[idx]
+      const landingOnContact = idx === SNAP_SECTIONS.length - 1
+      const alreadyThere = Math.abs(window.scrollY - dest) < 12
+
       busy = true
-      cbRef.current(idx) // update nav immediately so pill slides before spring settles
+      cbRef.current(idx)
       playSnap()
-      springTo(tops()[idx], () => { busy = false })
+      springTo(dest, () => { busy = false }, landingOnContact && !alreadyThere)
     }
 
     goToRef.current = goTo
@@ -265,15 +323,13 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
     }
 
     function onWheel(e: WheelEvent) {
-      if (busy) return
       if (e.deltaY > 0 && atEdge("down")) {
         e.preventDefault()
-        goTo(currentIndex() + 1)
+        if (!busy) goTo(currentIndex() + 1)
       } else if (e.deltaY < 0 && atEdge("up")) {
         e.preventDefault()
-        goTo(currentIndex() - 1)
+        if (!busy) goTo(currentIndex() - 1)
       }
-      // otherwise: don't preventDefault → browser scrolls within the section normally
     }
 
     function onTouchStart(e: TouchEvent) { touchStartY = e.touches[0].clientY }
@@ -380,14 +436,15 @@ export default function App() {
       <GridBackground />
       <ScrollingCube />
       <SectionDots active={activeSection} />
-      <div style={{ position: "relative", zIndex: 1, paddingBottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : 0 }}>
-        <Nav onLogoClick={() => snapTo(0)} activeSection={activeSection} />
+      <Nav onLogoClick={() => snapTo(0)} activeSection={activeSection} />
+      <div id="page-shell" style={{ position: "relative", zIndex: 1, paddingBottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : 0 }}>
         <Hero />
         <Mission />
         <Projects />
         <Skills />
         <Contact />
       </div>
+      <SiteFooter locked={activeSection === 4} />
     </div>
   )
 }
