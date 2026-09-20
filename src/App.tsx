@@ -100,7 +100,6 @@ function WireframeCube() {
 
 // ─── Scrolling cube ───────────────────────────────────────────────────────────
 function ScrollingCube() {
-  const isMobile = useMobile()
   const [smoothProgress, setSmoothProgress] = useState(0)
   const rawProgress = useRef(0)
   const rafRef = useRef<number>(0)
@@ -133,7 +132,7 @@ function ScrollingCube() {
       : 1 - (-2 * smoothProgress + 2) ** 3 / 2
 
   const scale = 1 + eased * 2.6
-  const opacity = isMobile ? 0 : 1.0 - eased * 0.77
+  const opacity = 1.0 - eased * 0.77
   const translateX = -8 + eased * 30
 
   return (
@@ -142,7 +141,7 @@ function ScrollingCube() {
         position: "fixed",
         top: 0,
         right: 0,
-        width: isMobile ? "80%" : "54%",
+        width: "54%",
         height: "100vh",
         display: "flex",
         alignItems: "center",
@@ -198,16 +197,29 @@ function isScrollBox(value: string) {
   return value === "auto" || value === "scroll" || value === "hidden" || value === "overlay"
 }
 
-function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
+function useScrollSnap(onSection: (i: number) => void, isMobile: boolean): (idx: number) => void {
   const cbRef = useRef(onSection)
   useEffect(() => { cbRef.current = onSection })
 
   const goToRef = useRef<(idx: number) => void>(() => {})
 
   useEffect(() => {
+    function nativeGoTo(idx: number) {
+      const id = SNAP_SECTIONS[idx]
+      if (!id) return
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+      cbRef.current(idx)
+    }
+
+    if (isMobile) {
+      goToRef.current = nativeGoTo
+      return
+    }
+
     let busy = false
     let busyTimer = 0
     let touchStartY = 0
+    let touchStartX = 0
     const SLACK = 48
 
     function scroller() {
@@ -395,11 +407,15 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
       }
     }
 
-    function onTouchStart(e: TouchEvent) { touchStartY = e.touches[0].clientY }
+    function onTouchStart(e: TouchEvent) {
+      touchStartY = e.touches[0].clientY
+      touchStartX = e.touches[0].clientX
+    }
     function onTouchEnd(e: TouchEvent) {
       if (busy) return
       const dy = touchStartY - e.changedTouches[0].clientY
-      if (Math.abs(dy) < 50) return
+      const dx = touchStartX - e.changedTouches[0].clientX
+      if (Math.abs(dy) < 50 || Math.abs(dx) >= Math.abs(dy)) return
       if (dy > 0 && atEdge("down")) goTo(currentIndex() + 1)
       else if (dy < 0 && atEdge("up")) goTo(currentIndex() - 1)
     }
@@ -413,7 +429,7 @@ function useScrollSnap(onSection: (i: number) => void): (idx: number) => void {
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
-  }, [])
+  }, [isMobile])
 
   return (idx: number) => goToRef.current(idx)
 }
@@ -473,7 +489,7 @@ function SectionDots({ active }: { active: number }) {
 export default function App() {
   const isMobile = useMobile()
   const [activeSection, setActiveSection] = useState(0)
-  const snapTo = useScrollSnap(setActiveSection)
+  const snapTo = useScrollSnap(setActiveSection, isMobile)
 
   // Update nav only after scrolling stops (covers nav-link clicks and logo click)
   useEffect(() => {
@@ -498,7 +514,7 @@ export default function App() {
   return (
     <div style={{ background: "#f8f8f6", minHeight: "100vh", position: "relative", overflowX: "clip" }}>
       <GridBackground />
-      <ScrollingCube />
+      {isMobile ? null : <ScrollingCube />}
       <SectionDots active={activeSection} />
       <Nav onLogoClick={() => snapTo(0)} activeSection={activeSection} />
       <div id="page-shell" style={{ position: "relative", zIndex: 1, paddingBottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : 0 }}>

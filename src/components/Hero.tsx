@@ -8,25 +8,17 @@ export default function Hero() {
       id="hero"
       className="section-container"
       style={{
-        minHeight: "100svh",
+        minHeight: isMobile
+          ? "calc(100svh - 72px - env(safe-area-inset-bottom, 0px))"
+          : "100svh",
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : isShort ? "55% 45%": "1fr 1fr",
         alignItems: "center",
         textAlign: isMobile ? "center" : "left",
       }}
     >
-      <div>
-        <p
-          className="font-display"
-          style={{
-            fontSize: sm ? 20 : 22,
-            fontWeight: 600,
-            letterSpacing: "-0.03em",
-            margin: "0 0 8px",
-          }}
-        >
-          Sean Mo
-        </p>
+      <div style={{ minWidth: 0, width: "100%" }}>
+        
         <Eyebrow>AI Engineer</Eyebrow>
         <h1
           className="font-display"
@@ -66,13 +58,15 @@ export default function Hero() {
             lineHeight: 1.7,
             color: "#6b6b68",
             maxWidth: isMobile ? "100%" : 380,
+            width: isMobile ? "100%" : undefined,
             marginBottom: sm ? 28 : 40,
             marginInline: isMobile ? "auto" : undefined,
+            overflowWrap: "break-word",
           }}
         >
-          I build AI systems that are practical, explainable, and designed for
-          real educational environments. My work spans AI literacy, computer
-          vision, and human-centered design.
+          Building AI systems that are practical, explainable, and designed
+          for real educational environments. Focused on AI literacy, computer
+          vision, and human-centred design.
         </p>
         <div
           style={{
@@ -86,7 +80,7 @@ export default function Hero() {
             View work
           </a>
           <a href="#contact" className="btn-outline" style={{ width: isMobile ? "100%" : "auto", textAlign: "center" }}>
-            Read Research
+            Get in touch
           </a>
         </div>
       </div>

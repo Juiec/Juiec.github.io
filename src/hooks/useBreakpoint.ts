@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react"
 
-export function useBreakpoint() {
-  const get = () => ({
-    sm: typeof window !== "undefined" ? window.innerWidth <= 480 : false,
-    md: typeof window !== "undefined" ? window.innerWidth <= 768 : false,
-    lg: typeof window !== "undefined" ? window.innerWidth <= 1024 : false,
-    short: typeof window !== "undefined" ? window.innerHeight <= 950 : false,
-  })
+function measure() {
+  if (typeof window === "undefined") {
+    return { sm: false, md: false, lg: false, short: false }
+  }
+  const width = window.innerWidth
+  const height = window.innerHeight
+  const phoneLandscape = width <= 932 && height <= 500
+  return {
+    sm: width <= 480,
+    md: width <= 768 || phoneLandscape,
+    lg: width <= 1024 || phoneLandscape,
+    short: height <= 950,
+  }
+}
 
-  const [bp, setBp] = useState(get)
+export function useBreakpoint() {
+  const [bp, setBp] = useState(measure)
 
   useEffect(() => {
-    const fn = () => setBp(get())
+    const fn = () => setBp(measure())
     window.addEventListener("resize", fn)
-    return () => window.removeEventListener("resize", fn)
+    window.addEventListener("orientationchange", fn)
+    return () => {
+      window.removeEventListener("resize", fn)
+      window.removeEventListener("orientationchange", fn)
+    }
   }, [])
 
   return bp

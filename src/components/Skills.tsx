@@ -10,7 +10,7 @@ const ROWS = [
   { items: ["YOLO", "YOLOE", "OpenCV", "NVIDIA Jetson", "Pose Estimation", "OCR", "Computer Vision"], cls: "marquee-right" },
   { items: ["RAG", "Llama.cpp", "Unsloth", "DeepSeek", "OpenAI API", "Prompt Engineering", "Local LLM"], cls: "marquee-left-slow" },
   { items: ["PROS", "LemLib", "PID", "Pure Pursuit", "Sensor Fusion", "Git", "NumPy"], cls: "marquee-right-slow" },
-  { items: ["Supabase", "AI Literacy", "EdTech", "Learning Design", "Responsible AI", "Pandas", "matplotlib"], cls: "marquee-left" },
+  { items: ["Supabase", "AI Literacy", "Learning Design", "Pandas", "matplotlib"], cls: "marquee-left" },
 ]
 
 function MarqueeTracks() {
@@ -94,7 +94,7 @@ export default function Skills() {
         flexDirection: "column",
         justifyContent: "center",
         minHeight: isMobile ? "auto" : "clamp(760px, 92vh, 980px)",
-        paddingBlock: sm ? "72px 100px" : isMobile ? "90px 100px" : "100px 64px",
+        paddingBlock: sm ? "72px 48px" : isMobile ? "90px 48px" : "100px 64px",
       }}
     >
       <div
@@ -103,7 +103,7 @@ export default function Skills() {
           marginBottom: isMobile ? 32 : 36,
         }}
       >
-        <Eyebrow>Capabilities</Eyebrow>
+        <Eyebrow>In practice</Eyebrow>
         <SectionHeading>Skills</SectionHeading>
       </div>
       <SkillMarquee />

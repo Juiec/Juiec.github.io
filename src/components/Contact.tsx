@@ -64,15 +64,27 @@ export function SiteFooter({ locked }: { locked: boolean }) {
         className="page-container"
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          paddingBlock: "12px 18px",
+          flexDirection: "column",
+          gap: 14,
+          paddingBlock: isMobile ? "16px 20px" : "18px 22px",
         }}
       >
-        <span className="font-display" style={{ fontSize: 15, fontWeight: 600 }}>Sean Mo</span>
-        <span style={{ fontSize: 12, color: "#6b6b68" }}>© 2026 — AI Engineer</span>
+        <p
+          style={{
+            margin: 0,
+            fontSize: isMobile ? 14 : 15,
+            lineHeight: 1.65,
+            color: "#6b6b68",
+            maxWidth: 420,
+          }}
+        >
+          The test is not whether a system works.
+          <br />
+          It is whether someone can live with it.
+        </p>
+        <span className="font-display" style={{ fontSize: 13, fontWeight: 600 }}>
+          Sean Mo · © 2026
+        </span>
       </div>
     </footer>
   )
@@ -88,19 +100,19 @@ export default function Contact() {
 
   const actions = [
     {
-      label: "Email Me",
+      label: "Email me",
       description: import.meta.env.VITE_EMAIL,
       href: `mailto:${import.meta.env.VITE_EMAIL}`,
       icon: "✉",
     },
     {
-      label: "WhatsApp Chat",
+      label: "WhatsApp",
       description: import.meta.env.VITE_WHATSAPP_NUMBER,
       href: import.meta.env.VITE_WHATSAPP_URL,
       icon: "◎",
     },
     {
-      label: "Download Resume",
+      label: "Download resume",
       description: "PDF · Updated Sep 2026",
       href: RESUME_URL,
       icon: "↓",
@@ -112,20 +124,22 @@ export default function Contact() {
     <section
       id="contact"
       style={{
-        minHeight: isMobile
-          ? "calc(100svh - 72px - env(safe-area-inset-bottom, 0px))"
-          : "100svh",
+        minHeight: isMobile ? "auto" : "100svh",
         display: "flex",
         flexDirection: "column",
-        overflow: "clip",
-        paddingBottom: 64,
+        overflow: isMobile ? "visible" : "clip",
+        paddingBottom: isMobile ? 140 : 120,
       }}
     >
       {/* Main content */}
       <div
         className="page-container"
         style={{
-          paddingBlock: sm ? "72px 24px" : isMobile ? "90px 28px" : "100px 32px",
+          paddingBlock: sm
+            ? "calc(72px + env(safe-area-inset-top, 0px)) 24px"
+            : isMobile
+              ? "calc(90px + env(safe-area-inset-top, 0px)) 28px"
+              : "100px 32px",
         }}
       >
         <Eyebrow>Let's talk</Eyebrow>
@@ -142,7 +156,7 @@ export default function Contact() {
           {/* Left — intro + social links */}
           <div>
             <p style={{ fontSize: sm ? 14 : "clamp(14px, 1.25vw, 16px)", lineHeight: 1.8, color: "#6b6b68", marginBottom: sm ? 24 : 28, maxWidth: 360 }}>
-              Currently open to AI Engineering roles in EdTech and Computer Vision.
+              Open to work in AI for education, and in computer vision.
               If you're building something in that space, I'd love to hear about it.
             </p>
 

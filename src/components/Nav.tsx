@@ -33,6 +33,11 @@ export default function Nav({
     { label: "Contact", href: "#contact", icon: "✦", sectionIdx: 4 },
   ]
 
+  const mobileLinks = [
+    { label: "Home", href: "#hero", icon: "○", sectionIdx: 0 },
+    ...links,
+  ]
+
   if (isMobile) {
     return (
       <nav
@@ -50,14 +55,20 @@ export default function Nav({
           borderTop: "1px solid rgba(17,17,16,0.08)",
           paddingBottom: "env(safe-area-inset-bottom, 0px)",
           minHeight: 72,
+          touchAction: "manipulation",
         }}
       >
-        {links.map((link) => {
+        {mobileLinks.map((link) => {
           const isActive = activeSection === link.sectionIdx
           return (
             <a
               key={link.label}
               href={link.href}
+              aria-current={isActive ? "page" : undefined}
+              onClick={(e) => {
+                e.preventDefault()
+                document.getElementById(link.href.slice(1))?.scrollIntoView({ behavior: "smooth" })
+              }}
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -65,14 +76,16 @@ export default function Nav({
                 justifyContent: "center",
                 gap: 3,
                 textDecoration: "none",
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: 500,
                 color: isActive ? "#111110" : "#9b9b98",
                 transition: "color 0.2s",
                 flex: 1,
-                paddingTop: 12,
-                paddingBottom: 10,
-                minHeight: 68,
+                minWidth: 0,
+                paddingTop: 10,
+                paddingBottom: 8,
+                minHeight: 64,
+                touchAction: "manipulation",
               }}
             >
               <span
