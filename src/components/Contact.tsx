@@ -80,7 +80,7 @@ export default function Contact() {
     {
       label: "Download Resume",
       description: "PDF · Updated Sep 2026",
-      href: (import.meta.env.VITE_RESUME_PATH || "/Mo_Sean_Resume.pdf").replace(/^\/?public\//, "/"),
+      href: "/resume.pdf",
       icon: "↓",
       download: true,
     },
