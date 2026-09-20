@@ -1,7 +1,29 @@
-import { Fragment } from "react"
+import { Fragment, type MouseEvent } from "react"
 import { useBreakpoint } from "../hooks/useBreakpoint"
 import Eyebrow from "./Eyebrow"
 import SectionHeading from "./SectionHeading"
+
+const RESUME_URL = `${import.meta.env.BASE_URL}resume.pdf`
+const RESUME_FILENAME = "Sean_Mo_Resume.pdf"
+
+async function downloadResume(event: MouseEvent<HTMLAnchorElement>) {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+  event.preventDefault()
+  const href = event.currentTarget.href
+  try {
+    const res = await fetch(href)
+    if (!res.ok) throw new Error(String(res.status))
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = RESUME_FILENAME
+    link.click()
+    URL.revokeObjectURL(url)
+  } catch {
+    window.open(href, "_blank", "noopener,noreferrer")
+  }
+}
 
 function InkLine() {
   return (
@@ -80,9 +102,9 @@ export default function Contact() {
     {
       label: "Download Resume",
       description: "PDF · Updated Sep 2026",
-      href: "/resume.pdf",
+      href: RESUME_URL,
       icon: "↓",
-      download: true,
+      download: RESUME_FILENAME,
     },
   ]
 
@@ -163,7 +185,9 @@ export default function Contact() {
               <a
                 key={a.label}
                 href={a.href}
-                {...(a.download ? { download: true } : { target: "_blank", rel: "noopener noreferrer" })}
+                {...(a.download
+                  ? { download: a.download, onClick: downloadResume }
+                  : { target: "_blank", rel: "noopener noreferrer" })}
                 className="action-card"
                 style={{ padding: sm ? "20px 20px" : "clamp(18px, 1.8vw, 28px) clamp(20px, 2vw, 28px)" }}
               >
