@@ -92,10 +92,100 @@ body {
 
 /* ─── Layout ────────────────────────────────────────────────────────────────── */
 
+:root {
+  --page-max: 1200px;
+  --page-gutter: 64px;
+  --page-frame: 16px;
+}
+
+.page-container {
+  width: min(var(--page-max), calc(100% - 2 * var(--page-frame)));
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+  box-sizing: border-box;
+}
+
 .section-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 100px 64px;
+  width: min(var(--page-max), calc(100% - 2 * var(--page-frame)));
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding: 100px var(--page-gutter) 64px;
+  box-sizing: border-box;
+}
+
+.nav-link {
+  color: #6b6b68;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 5px 2px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #111110;
+}
+
+.nav-link.is-active {
+  color: #111110;
+}
+
+.nav-link::before,
+.nav-link::after {
+  font-weight: 400;
+  color: #111110;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.nav-link::before {
+  content: "[";
+  margin-right: 0.4em;
+}
+
+.nav-link::after {
+  content: "]";
+  margin-left: 0.4em;
+}
+
+.nav-link.is-active::before,
+.nav-link.is-active::after {
+  opacity: 0.32;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #111110;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+  animation: nav-logo-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes nav-logo-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.25;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-logo {
+    animation: none;
+  }
 }
 
 .two-col {
@@ -482,7 +572,12 @@ body {
 
 /* phone landscape / small tablet */
 @media (max-width: 768px) {
-  .section-container { padding: 80px 32px; }
+  :root {
+    --page-gutter: 28px;
+    --page-frame: 0px;
+  }
+
+  .section-container { padding: 90px var(--page-gutter) 100px; }
 
   .two-col,
   .projects-grid,
@@ -505,6 +600,11 @@ body {
 
 /* phone portrait */
 @media (max-width: 480px) {
+  :root {
+    --page-gutter: 20px;
+  }
+
+  .section-container { padding: 72px var(--page-gutter) 100px; }
   .wireframe-cube,
   .wireframe-face {
     width: 144px;

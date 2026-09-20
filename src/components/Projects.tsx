@@ -90,11 +90,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      style={{
-        padding: sm ? "72px 20px 100px" : isMobile ? "90px 28px 100px" : "100px 64px 64px",
-        maxWidth: 1200,
-        margin: "0 auto",
-      }}
+      className="section-container"
     >
       <div
         style={{

@@ -19,7 +19,7 @@ function InkLine() {
 }
 
 export function SiteFooter({ locked }: { locked: boolean }) {
-  const { sm, md: isMobile } = useBreakpoint()
+  const { md: isMobile } = useBreakpoint()
 
   return (
     <footer
@@ -39,13 +39,14 @@ export function SiteFooter({ locked }: { locked: boolean }) {
     >
       <InkLine />
       <div
+        className="page-container"
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
           gap: 12,
-          padding: sm ? "12px 20px 18px" : "12px 32px 18px",
+          paddingBlock: "12px 18px",
         }}
       >
         <span className="font-display" style={{ fontSize: 15, fontWeight: 600 }}>Sean Mo</span>
@@ -99,12 +100,12 @@ export default function Contact() {
       }}
     >
       {/* Main content */}
-      <div style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        width: "100%",
-        padding: sm ? "72px 20px 24px" : isMobile ? "90px 28px 28px" : "100px 64px 32px",
-      }}>
+      <div
+        className="page-container"
+        style={{
+          paddingBlock: sm ? "72px 24px" : isMobile ? "90px 28px" : "100px 32px",
+        }}
+      >
         <Eyebrow>Let's talk</Eyebrow>
         <SectionHeading style={{ margin: sm ? "0 0 28px" : "0 0 30px", fontSize: "clamp(3rem, 4vw, 5.2rem)" }}>Get in touch</SectionHeading>
 

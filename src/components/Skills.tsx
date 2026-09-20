@@ -94,15 +94,13 @@ export default function Skills() {
         flexDirection: "column",
         justifyContent: "center",
         minHeight: isMobile ? "auto" : "clamp(760px, 92vh, 980px)",
-        padding: sm ? "72px 20px 100px" : isMobile ? "90px 28px 100px" : "100px 64px 64px",
+        paddingBlock: sm ? "72px 100px" : isMobile ? "90px 100px" : "100px 64px",
       }}
     >
       <div
+        className="page-container"
         style={{
-          maxWidth: 1200,
-          margin: "0 auto",
           marginBottom: isMobile ? 32 : 36,
-          width: "100%",
         }}
       >
         <Eyebrow>Capabilities</Eyebrow>

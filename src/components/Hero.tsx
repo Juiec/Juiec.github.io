@@ -6,14 +6,12 @@ export default function Hero() {
   return (
     <section
       id="hero"
+      className="section-container"
       style={{
         minHeight: "100svh",
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : isShort ? "55% 45%": "1fr 1fr",
         alignItems: "center",
-        padding: sm ? "72px 20px 100px" : isMobile ? "90px 28px 100px" : "100px 64px 64px",
-        maxWidth: 1200,
-        margin: "0 auto",
         textAlign: isMobile ? "center" : "left",
       }}
     >
