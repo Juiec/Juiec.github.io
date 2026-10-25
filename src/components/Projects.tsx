@@ -19,6 +19,24 @@ type Project = {
 
 const PROJECTS: Project[] = [
   {
+    title: "Meridian",
+    year: "2026",
+    desc: "Personal agent UI for a local model. Next.js streams chat to LM Studio's OpenAI-compatible API, with tools, skills, bounded memory, and a Travel Agent map.",
+    tech: ["Next.js", "LM Studio", "SQLite", "Leaflet"],
+    tag: "Local agent",
+    image: "/cards/meridian.png",
+    link: "https://github.com/Juiec/Meridian",
+  },
+  {
+    title: "Avatar Studio",
+    year: "2026",
+    desc: "Cloud PNG-tuber as a Python desktop app. iOS-style rig editor, MediaPipe face and hand tracking, morph frames, and a virtual webcam with overlay.",
+    tech: ["Python", "MediaPipe"],
+    tag: "Desktop",
+    image: "/cards/avatar-studio.png",
+    link: "https://github.com/Juiec/Avatar-studio",
+  },
+  {
     title: "Glowdening",
     year: "2026",
     desc: "A wellbeing companion for overwhelm. Led as co-founder and CTO, with long-term memory now in prototyping.",
