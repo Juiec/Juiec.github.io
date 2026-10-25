@@ -40,25 +40,9 @@ function InkLine() {
   )
 }
 
-export function SiteFooter({ locked }: { locked: boolean }) {
-  const { md: isMobile } = useBreakpoint()
-
+function FooterBody({ compact }: { compact: boolean }) {
   return (
-    <footer
-      aria-hidden={!locked}
-      style={{
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : 0,
-        zIndex: 90,
-        background: "#f8f8f6",
-        opacity: locked ? 1 : 0,
-        pointerEvents: locked ? "auto" : "none",
-        transform: locked ? "translateY(0)" : "translateY(10px)",
-        transition: "opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-      }}
-    >
+    <>
       <InkLine />
       <div
         className="page-container"
@@ -66,13 +50,13 @@ export function SiteFooter({ locked }: { locked: boolean }) {
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          paddingBlock: isMobile ? "16px 20px" : "18px 22px",
+          paddingBlock: compact ? "16px 20px" : "18px 22px",
         }}
       >
         <p
           style={{
             margin: 0,
-            fontSize: isMobile ? 14 : 15,
+            fontSize: compact ? 14 : 15,
             lineHeight: 1.65,
             color: "#6b6b68",
             maxWidth: 420,
@@ -86,6 +70,31 @@ export function SiteFooter({ locked }: { locked: boolean }) {
           Sean Mo · © 2026
         </span>
       </div>
+    </>
+  )
+}
+
+export function SiteFooter({ locked }: { locked: boolean }) {
+  const { md: isMobile } = useBreakpoint()
+  if (isMobile) return null
+
+  return (
+    <footer
+      aria-hidden={!locked}
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 90,
+        background: "#f8f8f6",
+        opacity: locked ? 1 : 0,
+        pointerEvents: locked ? "auto" : "none",
+        transform: locked ? "translateY(0)" : "translateY(10px)",
+        transition: "opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+      }}
+    >
+      <FooterBody compact={false} />
     </footer>
   )
 }
@@ -128,7 +137,7 @@ export default function Contact() {
         display: "flex",
         flexDirection: "column",
         overflow: isMobile ? "visible" : "clip",
-        paddingBottom: isMobile ? 140 : 120,
+        paddingBottom: isMobile ? 28 : 120,
       }}
     >
       {/* Main content */}
@@ -220,6 +229,12 @@ export default function Contact() {
           </div>
         </div>
       </div>
+
+      {isMobile ? (
+        <footer style={{ marginTop: 36 }}>
+          <FooterBody compact />
+        </footer>
+      ) : null}
     </section>
   )
 }

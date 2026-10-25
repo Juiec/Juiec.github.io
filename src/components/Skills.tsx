@@ -13,6 +13,20 @@ const ROWS = [
   { items: ["Supabase", "AI Literacy", "Learning Design", "Pandas"], cls: "marquee-left" },
 ]
 
+const SKILL_ITEMS = [...new Set(ROWS.flatMap((row) => row.items))]
+
+function SkillChips() {
+  return (
+    <ul className="skill-chips page-container">
+      {SKILL_ITEMS.map((skill) => (
+        <li key={skill} className="skill-chip">
+          {skill}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function MarqueeTracks() {
   return (
     <>
@@ -107,7 +121,7 @@ export default function Skills() {
         <Eyebrow>In practice</Eyebrow>
         <SectionHeading>Skills</SectionHeading>
       </div>
-      <SkillMarquee />
+      {isMobile ? <SkillChips /> : <SkillMarquee />}
     </section>
   )
 }
