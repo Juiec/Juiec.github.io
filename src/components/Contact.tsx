@@ -203,7 +203,7 @@ export default function Contact() {
           </div>
 
           {/* Right — action cards */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: sm ? 12 : 16 }}>
             {actions.map((a) => (
               <a
                 key={a.label}
@@ -212,7 +212,7 @@ export default function Contact() {
                   ? { download: a.download, onClick: downloadResume }
                   : { target: "_blank", rel: "noopener noreferrer" })}
                 className="action-card"
-                style={{ padding: sm ? "20px 20px" : "clamp(18px, 1.8vw, 28px) clamp(20px, 2vw, 28px)" }}
+                style={{ padding: sm ? "16px 18px" : "clamp(18px, 1.8vw, 28px) clamp(20px, 2vw, 28px)" }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                   <span style={{ fontSize: 22, flexShrink: 0, lineHeight: 1, opacity: 0.35 }}>
