@@ -6,11 +6,11 @@ import SectionHeading from "./SectionHeading"
 const SLOW_RATE = 0.22
 
 const ROWS = [
-  { items: ["Python", "C++", "JavaScript", "TypeScript", "Next.js", "Tailwind", "Java"], cls: "marquee-left" },
-  { items: ["YOLO", "YOLOE", "OpenCV", "NVIDIA Jetson", "Pose Estimation", "OCR", "Computer Vision"], cls: "marquee-right" },
-  { items: ["RAG", "Llama.cpp", "Unsloth", "DeepSeek", "OpenAI API", "Prompt Engineering", "Local LLM"], cls: "marquee-left-slow" },
-  { items: ["PROS", "LemLib", "PID", "Pure Pursuit", "Sensor Fusion", "Git", "NumPy"], cls: "marquee-right-slow" },
-  { items: ["Supabase", "AI Literacy", "Learning Design", "Pandas", "matplotlib"], cls: "marquee-left" },
+  { items: ["Python", "C++", "JavaScript", "TypeScript", "Next.js"], cls: "marquee-left" },
+  { items: ["YOLO", "OpenCV", "NVIDIA Jetson", "Pose Estimation", "OCR", "Computer Vision"], cls: "marquee-right" },
+  { items: ["RAG", "Llama.cpp", "Unsloth", "DeepSeek", "OpenAI API", "Local LLM"], cls: "marquee-left-slow" },
+  { items: ["PROS", "LemLib", "PID", "Pure Pursuit", "Sensor Fusion"], cls: "marquee-right-slow" },
+  { items: ["Supabase", "AI Literacy", "Learning Design", "Pandas"], cls: "marquee-left" },
 ]
 
 function MarqueeTracks() {
@@ -18,7 +18,8 @@ function MarqueeTracks() {
     <>
       {ROWS.map(({ items, cls }, ri) => (
         <div key={ri} className={`marquee-track ${cls}`}>
-          {[...items, ...items, ...items].map((skill, i) => (
+          {/* Four repeats: the -50% keyframes travel exactly two cycles, so a shorter row still covers the viewport and the loop meets itself. */}
+          {[...items, ...items, ...items, ...items].map((skill, i) => (
             <div key={`${ri}-${i}`} className="marquee-item">
               <span className="skill-word">{skill}</span>
               <span className="skill-dot">•</span>

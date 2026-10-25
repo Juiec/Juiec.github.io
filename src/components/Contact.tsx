@@ -107,7 +107,7 @@ export default function Contact() {
     },
     {
       label: "WhatsApp",
-      description: import.meta.env.VITE_WHATSAPP_NUMBER,
+      description: "Message me",
       href: import.meta.env.VITE_WHATSAPP_URL,
       icon: "◎",
     },
