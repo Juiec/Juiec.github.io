@@ -18,7 +18,8 @@ function MarqueeTracks() {
     <>
       {ROWS.map(({ items, cls }, ri) => (
         <div key={ri} className={`marquee-track ${cls}`}>
-          {[...items, ...items, ...items].map((skill, i) => (
+          {/* Four repeats: the -50% keyframes travel exactly two cycles, so a shorter row still covers the viewport and the loop meets itself. */}
+          {[...items, ...items, ...items, ...items].map((skill, i) => (
             <div key={`${ri}-${i}`} className="marquee-item">
               <span className="skill-word">{skill}</span>
               <span className="skill-dot">•</span>
