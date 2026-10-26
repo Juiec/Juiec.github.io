@@ -142,9 +142,7 @@ function MobileProjects() {
           <article key={project.title} className="project-stack-card">
             {project.image ? (
               <img src={assetUrl(project.image)} alt={project.title} />
-            ) : (
-              <div className="project-media project-media--empty" aria-hidden />
-            )}
+            ) : null}
             <ProjectCaption project={project} />
           </article>
         ))}
